@@ -1,0 +1,12 @@
+{
+    "name": "com.ta-david-yu.dyserializabletype",
+    "displayName": "DY.SerializableType",
+    "version": "1.0.3",
+    "description": "Serializable Type attribute that exposes Type in inspector for Unity Editor",
+    "keywords": [],
+    "author": {
+        "name": "Ta David Yu",
+        "email": "d366095@gmail.com",
+        "url": "https://github.com/ta-david-yu"
+    }
+}
