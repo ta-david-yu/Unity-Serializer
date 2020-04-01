@@ -1,0 +1,17 @@
+{
+    "name": "com.ta-david-yu.dyserializabletype.Editor",
+    "references": [
+        "GUID:7618a4f3d4fb7e244b1a2e07c86735c6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
