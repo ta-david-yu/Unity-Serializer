@@ -13,16 +13,16 @@ namespace DYSerializer
         public abstract IEnumerable<Type> GetEnumerableOfSatisfiedTypes();
     }
 
-    public class InterfaceImplmentationAttribute : ClassConstraintAttribute
+    public class InterfaceImplementationAttribute : ClassConstraintAttribute
     {
         public Type InterfaceType { get; set; }
 
-        public InterfaceImplmentationAttribute()
+        public InterfaceImplementationAttribute()
         {
 
         }
 
-        public InterfaceImplmentationAttribute(Type interfaceType)
+        public InterfaceImplementationAttribute(Type interfaceType)
         {
             InterfaceType = interfaceType;
         }
