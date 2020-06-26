@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -22,6 +23,11 @@ namespace DYSerializer
             var attr = attribute as ClassConstraintAttribute;
 
             // show type name property ui
+            if (Type.GetType(label.text) != null)
+            {
+                label.text = SerializedPropertyUtility.GetSplitNamesFromAssemblyQualifiedName(label.text).AssemblyName;
+            }
+
             SerializedProperty typenameProperty = property.FindPropertyRelative("m_TypeName");
             EditorGUI.BeginProperty(position, label, typenameProperty);
             {

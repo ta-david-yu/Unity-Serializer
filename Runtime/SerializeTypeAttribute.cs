@@ -13,6 +13,7 @@ namespace DYSerializer
         public abstract IEnumerable<Type> GetEnumerableOfSatisfiedTypes();
     }
 
+    [AttributeUsage(AttributeTargets.Field)]
     public class InterfaceImplementationAttribute : ClassConstraintAttribute
     {
         public Type InterfaceType { get; set; }
@@ -33,6 +34,7 @@ namespace DYSerializer
         }
     }
 
+    [AttributeUsage(AttributeTargets.Field)]
     public class ClassExtensionAttribute : ClassConstraintAttribute
     {
         public Type BaseType { get; set; }
