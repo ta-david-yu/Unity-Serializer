@@ -1,7 +1,7 @@
 {
     "name": "com.ta-david-yu.dyserializer",
     "displayName": "DY.Serializer",
-    "version": "3.0.0",
+    "version": "2.1.0",
     "description": "SerializableType and Polymorphic Type insepctor",
     "keywords": [],
     "author": {
