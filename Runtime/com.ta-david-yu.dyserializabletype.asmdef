@@ -1,3 +1,13 @@
-﻿{
-	"name": "com.ta-david-yu.dyserializabletype"
+{
+    "name": "com.ta-david-yu.dyserializer",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
