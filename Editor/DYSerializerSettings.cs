@@ -11,7 +11,7 @@ namespace DYSerializer
         private bool m_ShowTypeNameWithNameSpace = false;
         public bool ShowTypeNameWithNameSpace { get { return m_ShowTypeNameWithNameSpace; } }
 
-        internal static DYSerializerSettings GetOrCreateSettings(string path)
+        internal static DYSerializerSettings GetOrCreateSettings(string path, string filename)
         {
             var settings = AssetDatabase.LoadAssetAtPath<DYSerializerSettings>(path);
             if (settings == null)
@@ -19,7 +19,12 @@ namespace DYSerializer
                 settings = ScriptableObject.CreateInstance<DYSerializerSettings>();
                 settings.m_ShowTypeNameWithNameSpace = false;
 
-                AssetDatabase.CreateAsset(settings, path);
+                if (!AssetDatabase.IsValidFolder($"Assets/{path}"))
+                {
+                    AssetDatabase.CreateFolder("Assets", path);
+                }
+
+                AssetDatabase.CreateAsset(settings, $"Assets/{path}/{filename}");
                 AssetDatabase.SaveAssets();
             }
             return settings;

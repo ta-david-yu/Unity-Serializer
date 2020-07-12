@@ -43,7 +43,7 @@ namespace DYSerializer
 
             var names = SerializedPropertyUtility.GetSplitNamesFromManagerReferenceFullTypename(property.managedReferenceFullTypename);
             var className = string.IsNullOrEmpty(names.ClassName) ? "(Null)" :
-                DYSerializerSettings.GetOrCreateSettings(DYSerializerSettingsProvider.c_SettingsPath).ShowTypeNameWithNameSpace? names.ClassName : property.GetManagedReferenceFullType().Name;
+                DYSerializerSettings.GetOrCreateSettings(DYSerializerSettingsProvider.c_SettingsPath, DYSerializerSettingsProvider.c_SettingsFilename).ShowTypeNameWithNameSpace? names.ClassName : property.GetManagedReferenceFullType().Name;
             var assemblyName = names.AssemblyName;
 
             if (GUI.Button(buttonPosition, new GUIContent(className, names.ClassName + " (" + assemblyName + ")")))

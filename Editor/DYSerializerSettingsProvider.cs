@@ -10,7 +10,10 @@ namespace DYSerializer
     public class DYSerializerSettingsProvider : SettingsProvider
     {
         // Const
-        public const string c_SettingsPath = "Assets/Editor/DYSerializerSettings.asset";
+        public static string c_SettingsFullPath { get { return $"Assets/{c_SettingsPath}/{c_SettingsFilename}"; } }
+        public const string c_SettingsPath = "Editor";
+        public const string c_SettingsFilename = "DYSerializerSettings.asset";
+
         class Styles
         {
             public static GUIContent ShowTypeNameWithNameSpace = new GUIContent("Show Namespace", "Show namespace of a type in generic menu.");
@@ -21,17 +24,17 @@ namespace DYSerializer
 
         public DYSerializerSettingsProvider(string path, SettingsScope scope = SettingsScope.User) : base(path, scope)
         {
-            m_Settings = new SerializedObject(DYSerializerSettings.GetOrCreateSettings(c_SettingsPath));
+            m_Settings = new SerializedObject(DYSerializerSettings.GetOrCreateSettings(c_SettingsPath, c_SettingsFilename));
         }
 
         public static bool IsSettingsAvailable()
         {
-            return File.Exists(c_SettingsPath);
+            return File.Exists(c_SettingsFullPath);
         }
 
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
-            m_Settings = new SerializedObject(DYSerializerSettings.GetOrCreateSettings(c_SettingsPath));
+            m_Settings = new SerializedObject(DYSerializerSettings.GetOrCreateSettings(c_SettingsPath, c_SettingsFilename));
         }
 
         public override void OnGUI(string searchContext)
@@ -56,7 +59,7 @@ namespace DYSerializer
         {
             if (!IsSettingsAvailable())
             {
-                DYSerializerSettings.GetOrCreateSettings(c_SettingsPath);
+                DYSerializerSettings.GetOrCreateSettings(c_SettingsFullPath, c_SettingsFilename);
             }
 
             var provider = new DYSerializerSettingsProvider("Preferences/DYSerializer", SettingsScope.User);
