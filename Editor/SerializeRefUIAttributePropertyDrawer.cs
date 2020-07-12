@@ -42,10 +42,11 @@ namespace DYSerializer
             GUI.backgroundColor = backgroundColor;
 
             var names = SerializedPropertyUtility.GetSplitNamesFromManagerReferenceFullTypename(property.managedReferenceFullTypename);
-            var className = string.IsNullOrEmpty(names.ClassName) ? "(Null)" : names.ClassName;
+            var className = string.IsNullOrEmpty(names.ClassName) ? "(Null)" :
+                DYSerializerSettings.GetOrCreateSettings(DYSerializerSettingsProvider.c_SettingsPath).ShowTypeNameWithNameSpace? names.ClassName : property.GetManagedReferenceFullType().Name;
             var assemblyName = names.AssemblyName;
 
-            if (GUI.Button(buttonPosition, new GUIContent(className, className + " (" + assemblyName + ")")))
+            if (GUI.Button(buttonPosition, new GUIContent(className, names.ClassName + " (" + assemblyName + ")")))
                 drawTypeDropDownList(position, property, types.ToList());
 
             GUI.backgroundColor = storedColor;
@@ -53,8 +54,8 @@ namespace DYSerializer
 
             // draw property field
             EditorGUI.PropertyField(position, property, GUIContent.none, true);
-
             EditorGUI.EndProperty();
+
         }
 
         private void drawTypeDropDownList(Rect position, SerializedProperty property, List<Type> types)
