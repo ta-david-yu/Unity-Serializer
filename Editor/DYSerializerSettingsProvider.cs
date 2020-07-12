@@ -10,7 +10,6 @@ namespace DYSerializer
     public class DYSerializerSettingsProvider : SettingsProvider
     {
         // Const
-        public static string c_SettingsFullPath { get { return $"Assets/{c_SettingsPath}/{c_SettingsFilename}"; } }
         public const string c_SettingsPath = "Editor";
         public const string c_SettingsFilename = "DYSerializerSettings.asset";
 
@@ -29,7 +28,7 @@ namespace DYSerializer
 
         public static bool IsSettingsAvailable()
         {
-            return File.Exists(c_SettingsFullPath);
+            return File.Exists($"Assets/{c_SettingsPath}/{c_SettingsFilename}");
         }
 
         public override void OnActivate(string searchContext, VisualElement rootElement)
@@ -59,7 +58,7 @@ namespace DYSerializer
         {
             if (!IsSettingsAvailable())
             {
-                DYSerializerSettings.GetOrCreateSettings(c_SettingsFullPath, c_SettingsFilename);
+                DYSerializerSettings.GetOrCreateSettings(c_SettingsPath, c_SettingsFilename);
             }
 
             var provider = new DYSerializerSettingsProvider("Preferences/DYSerializer", SettingsScope.User);

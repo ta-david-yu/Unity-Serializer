@@ -22,6 +22,7 @@ namespace DYSerializer
                 if (!AssetDatabase.IsValidFolder($"Assets/{path}"))
                 {
                     AssetDatabase.CreateFolder("Assets", path);
+                    AssetDatabase.Refresh();
                 }
 
                 AssetDatabase.CreateAsset(settings, $"Assets/{path}/{filename}");
