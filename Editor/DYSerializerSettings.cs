@@ -13,7 +13,9 @@ namespace DYSerializer
 
         internal static DYSerializerSettings GetOrCreateSettings(string path, string filename)
         {
-            var settings = AssetDatabase.LoadAssetAtPath<DYSerializerSettings>(path);
+            string fullpath = $"Assets/{path}/{filename}";
+
+            var settings = AssetDatabase.LoadAssetAtPath<DYSerializerSettings>(fullpath);
             if (settings == null)
             {
                 settings = ScriptableObject.CreateInstance<DYSerializerSettings>();
@@ -25,7 +27,7 @@ namespace DYSerializer
                     AssetDatabase.Refresh();
                 }
 
-                AssetDatabase.CreateAsset(settings, $"Assets/{path}/{filename}");
+                AssetDatabase.CreateAsset(settings, fullpath);
                 AssetDatabase.SaveAssets();
             }
             return settings;
