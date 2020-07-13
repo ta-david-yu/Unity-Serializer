@@ -15,8 +15,8 @@ namespace DYSerializer
             get { return m_Type; }
             set
             {
-                if (value != null && !value.IsClass)
-                    throw new ArgumentException(string.Format("'{0}' is not a class type.", value.FullName), "value");
+                if (value != null && !(value.IsValueType || value.IsClass))
+                    throw new ArgumentException(string.Format("'{0}' is not a class/struct type.", value.FullName), "value");
 
                 m_Type = value;
                 m_TypeName = (value == null)? "" : value.AssemblyQualifiedName;

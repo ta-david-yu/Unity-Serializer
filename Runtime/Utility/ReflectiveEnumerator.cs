@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 
 namespace DYSerializer
 {
@@ -29,10 +30,10 @@ namespace DYSerializer
         public static IEnumerable<Type> GetEnumerableOfClassExtension(Type baseType, bool allowAbstract = false)
         {
             List<Type> types = new List<Type>();
-            foreach (Type type in
-                Assembly.GetAssembly(baseType).GetTypes()
+            foreach (Type type in TypeCache.GetTypesDerivedFrom(baseType)
+                //Assembly.GetAssembly(baseType).GetTypes()
                 .Where(myType =>
-                    myType.IsClass &&
+                    myType.IsClass && !myType.IsGenericType &&
                     (allowAbstract || !myType.IsAbstract) &&
                     myType.IsSubclassOf(baseType)))
             {
@@ -53,10 +54,10 @@ namespace DYSerializer
             {
                 List<Type> types = new List<Type>();
 
-                foreach (Type type in
-                    Assembly.GetAssembly(interfaceType).GetTypes()
+                foreach (Type type in TypeCache.GetTypesDerivedFrom(interfaceType)
+                    //Assembly.GetAssembly(interfaceType).GetTypes()
                     .Where(myType =>
-                        myType.IsClass &&
+                        !myType.IsInterface && !myType.IsGenericType &&
                         (allowAbstract || !myType.IsAbstract) &&
                         interfaceType.IsAssignableFrom(myType)))
                 {
