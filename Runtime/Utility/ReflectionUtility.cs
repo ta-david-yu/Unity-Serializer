@@ -70,6 +70,16 @@ namespace DYSerializer
             return new List<Type>();
         }
 
+        public static bool HasImplicitConversion(Type baseType, Type targetType)
+        {
+            return baseType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(mi => mi.Name == "op_Implicit" && mi.ReturnType == targetType)
+                .Any(mi => {
+                    ParameterInfo pi = mi.GetParameters().FirstOrDefault();
+                    return pi != null && pi.ParameterType == baseType;
+                });
+        }
+
         public static IEnumerable<FieldInfo> GetAllFields(object target, Func<FieldInfo, bool> predicate)
         {
             List<Type> types = new List<Type>()
