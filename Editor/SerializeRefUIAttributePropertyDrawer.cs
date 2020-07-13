@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace DYSerializer
 {
@@ -63,8 +64,7 @@ namespace DYSerializer
         {
             var menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("(Null)"), property.GetManagedReferenceFullType() is null, property.SetManagedReferenceToNull);
-
+            menu.AddItem(new GUIContent("(Null)"), property.GetManagedReferenceFullType() is null, assignNewInstanceCmd, new AssignNewInstanceData(null, property));
 
             foreach (var type in types)
             {
@@ -76,6 +76,33 @@ namespace DYSerializer
             {
                 var data = (AssignNewInstanceData)obj;
                 data.Property.AssignNewInstanceOfTypeToManagedReference(data.Type);
+
+                // Callback
+                OnTypeChangedAttribute[] onSerializableTypeChangedAttirbutes = PropertyUtility.GetAttributes<OnTypeChangedAttribute>(property);
+                if (onSerializableTypeChangedAttirbutes.Length != 0)
+                {
+                    object target = PropertyUtility.GetTargetObjectWithProperty(property);
+                    Type newAssignedType = data.Type;
+                    foreach (var attri in onSerializableTypeChangedAttirbutes)
+                    {
+                        MethodInfo callbackMethod = ReflectionUtility.GetMethod(target, attri.CallbackName);
+                        if (callbackMethod != null &&
+                            callbackMethod.ReturnType == typeof(void) &&
+                            callbackMethod.GetParameters().Length == 1 &&
+                            callbackMethod.GetParameters()[0].ParameterType == typeof(Type))
+                        {
+                            callbackMethod.Invoke(target, new object[] { newAssignedType });
+                        }
+                        else
+                        {
+                            string warning = string.Format(
+                                "{0} can only invoke methods with 'void' return type and 1 Type parameter",
+                                attri.GetType().Name);
+
+                            Debug.LogWarning(warning, property.serializedObject.targetObject);
+                        }
+                    }
+                }
             }
 
             menu.ShowAsContext();
@@ -83,8 +110,8 @@ namespace DYSerializer
 
         private readonly struct AssignNewInstanceData
         {
-            public readonly SerializedProperty Property;
             public readonly Type Type;
+            public readonly SerializedProperty Property;
 
             public AssignNewInstanceData(Type type, SerializedProperty property)
             {

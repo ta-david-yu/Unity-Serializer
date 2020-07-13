@@ -11,7 +11,7 @@ namespace DYSerializer
         /// Creates instance of passed type and assigns it to managed reference
         public static object AssignNewInstanceOfTypeToManagedReference(this SerializedProperty serializedProperty, Type type)
         {
-            var instance = Activator.CreateInstance(type);
+            var instance = type != null? Activator.CreateInstance(type) : null;
 
             Undo.RegisterCompleteObjectUndo(serializedProperty.serializedObject.targetObject, "Change property managed reference type");
 
@@ -22,6 +22,7 @@ namespace DYSerializer
             return instance;
         }
 
+        /*
         /// Sets managed reference to null
         public static void SetManagedReferenceToNull(this SerializedProperty serializedProperty)
         {
@@ -31,7 +32,7 @@ namespace DYSerializer
             serializedProperty.managedReferenceValue = null;
             serializedProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
-
+        */
         public static Type GetManagedReferenceFieldType(this SerializedProperty property)
         {
             var names = GetSplitNamesFromManagerReferenceFullTypename(property.managedReferenceFieldTypename);

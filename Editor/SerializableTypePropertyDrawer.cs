@@ -92,7 +92,7 @@ namespace DYSerializer
                 typenameProperty.serializedObject.ApplyModifiedProperties();
 
                 // Callback
-                OnSerializableTypeChangedAttribute[] onSerializableTypeChangedAttirbutes = PropertyUtility.GetAttributes<OnSerializableTypeChangedAttribute>(property);
+                OnTypeChangedAttribute[] onSerializableTypeChangedAttirbutes = PropertyUtility.GetAttributes<OnTypeChangedAttribute>(property);
                 if (onSerializableTypeChangedAttirbutes.Length != 0)
                 {
                     object target = PropertyUtility.GetTargetObjectWithProperty(property);
