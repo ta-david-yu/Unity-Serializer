@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -83,12 +84,39 @@ namespace DYSerializer
                 menu.AddItem(new GUIContent(typeName), currType == type, assignNewType, type.AssemblyQualifiedName);
             }
 
-            void assignNewType(object obj)
+            void assignNewType(object typenameObj)
             {
-                var newTypename = (string)obj;
+                var newTypename = (string)typenameObj;
                 typenameProperty.serializedObject.Update();
                 typenameProperty.stringValue = newTypename;
                 typenameProperty.serializedObject.ApplyModifiedProperties();
+
+                // Callback
+                OnSerializableTypeChangedAttribute[] onSerializableTypeChangedAttirbutes = PropertyUtility.GetAttributes<OnSerializableTypeChangedAttribute>(property);
+                if (onSerializableTypeChangedAttirbutes.Length != 0)
+                {
+                    object target = PropertyUtility.GetTargetObjectWithProperty(property);
+                    Type newAssignedType = Type.GetType(newTypename);
+                    foreach (var attri in onSerializableTypeChangedAttirbutes)
+                    {
+                        MethodInfo callbackMethod = ReflectionUtility.GetMethod(target, attri.CallbackName);
+                        if (callbackMethod != null &&
+                            callbackMethod.ReturnType == typeof(void) &&
+                            callbackMethod.GetParameters().Length == 1 &&
+                            callbackMethod.GetParameters()[0].ParameterType == typeof(Type))
+                        {
+                            callbackMethod.Invoke(target, new object[] { newAssignedType });
+                        }
+                        else
+                        {
+                            string warning = string.Format(
+                                "{0} can only invoke methods with 'void' return type and 1 Type parameter",
+                                attri.GetType().Name);
+
+                            Debug.LogWarning(warning, property.serializedObject.targetObject);
+                        }
+                    }
+                }
             }
 
             menu.ShowAsContext();

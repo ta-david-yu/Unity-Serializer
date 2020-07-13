@@ -30,7 +30,7 @@ namespace DYSerializer
 
         public override IEnumerable<Type> GetEnumerableOfSatisfiedTypes()
         {
-            return ReflectiveEnumerator.GetEnumerableOfInterfaceImplmentation(InterfaceType, AllowAbstract);
+            return ReflectionUtility.GetEnumerableOfInterfaceImplmentation(InterfaceType, AllowAbstract);
         }
     }
 
@@ -51,7 +51,7 @@ namespace DYSerializer
 
         public override IEnumerable<Type> GetEnumerableOfSatisfiedTypes()
         {
-            return ReflectiveEnumerator.GetEnumerableOfClassExtension(BaseType, AllowAbstract);
+            return ReflectionUtility.GetEnumerableOfClassExtension(BaseType, AllowAbstract);
         }
     }
 }
