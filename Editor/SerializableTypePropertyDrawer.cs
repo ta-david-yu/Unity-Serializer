@@ -31,63 +31,67 @@ namespace DYSerializer
             SerializedProperty typenameProperty = property.FindPropertyRelative("m_TypeName");
             EditorGUI.BeginProperty(position, label, typenameProperty);
             {
+                var labelPosition = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+                EditorGUI.LabelField(labelPosition, label);
+
                 if (attr == null)
                 {
                     var pos = position;
                     pos.height = m_HelpBoxVerticalPadding;
                     pos.y += base.GetPropertyHeight(property, label);
+                    pos.x += EditorGUIUtility.labelWidth + 1 * EditorGUIUtility.standardVerticalSpacing;
+                    pos.width -= EditorGUIUtility.labelWidth + 1 * EditorGUIUtility.standardVerticalSpacing;
                     EditorGUI.HelpBox(pos, "A SerializableType field requires either 'InterfaceImplementation' or 'ClassExtension' attribute to work properly.", MessageType.Error);
                 }
 
+                var buttonPosition = position;
+                buttonPosition.x += EditorGUIUtility.labelWidth + 1 * EditorGUIUtility.standardVerticalSpacing;
+                buttonPosition.width -= EditorGUIUtility.labelWidth + 1 * EditorGUIUtility.standardVerticalSpacing;
+                buttonPosition.height = EditorGUIUtility.singleLineHeight;
+
                 // get list of derived types' names
                 var types = attr == null ? new List<System.Type>() : attr.GetEnumerableOfSatisfiedTypes().ToList();
+                Type type = Type.GetType(typenameProperty.stringValue);
+                string typename = type == null? "(Null)" : 
+                    DYSerializerSettings.GetOrCreateSettings(DYSerializerSettingsProvider.c_SettingsPath, DYSerializerSettingsProvider.c_SettingsFilename).ShowTypeNameWithNameSpace? type.FullName : type.Name;
 
-                List<string> typeNameList = new List<string>();
-                typeNameList.Add("(Null)");
-                typeNameList.AddRange(types.Select((type) => { return type.FullName; }));
+                var tipmsg = type == null? "" : type.FullName + " (" + type?.Assembly.GetName().Name + ")";
 
-                string propertyString = typenameProperty.stringValue;
-                int index = -1;
-                if (propertyString == "")
-                {
-                    // The tag is empty
-                    index = 0; // first index is the special <notag> entry
-                }
-                else
-                {
-                    // check if there is an entry that matches the entry and get the index
-                    // we skip index 0 as that is a special custom case
-                    for (int i = 0; i < types.Count; i++)
-                    {
-                        if (types[i].AssemblyQualifiedName == propertyString)
-                        {
-                            index = i + 1;
-                            break;
-                        }
-                    }
-                }
+                var storedColor = GUI.backgroundColor;
+                GUI.backgroundColor = Color.yellow;
 
-                // Draw the popup box with the current selected index
-                using (var disabledGroup = new EditorGUI.DisabledGroupScope(attr == null))
-                {
-                    index = EditorGUI.Popup(position, label.text, index, typeNameList.ToArray());
-                }
+                if (GUI.Button(buttonPosition, new GUIContent(typename, tipmsg)))
+                    drawTypeDropDownList(position, property, types);
 
-                // Adjust the actual string value of the property based on the selection
-                if (index == 0)
-                {
-                    typenameProperty.stringValue = "";
-                }
-                else if (index >= 1)
-                {
-                    typenameProperty.stringValue = types[index - 1].AssemblyQualifiedName;
-                }
-                else
-                {
-                    typenameProperty.stringValue = "";
-                }
+                GUI.backgroundColor = storedColor;
             }
             EditorGUI.EndProperty();
+        }
+
+        private void drawTypeDropDownList(Rect position, SerializedProperty property, List<Type> types)
+        {
+            SerializedProperty typenameProperty = property.FindPropertyRelative("m_TypeName");
+            string typename = typenameProperty.stringValue;
+            var currType = System.Type.GetType(typename);
+
+            var menu = new GenericMenu();
+            menu.AddItem(new GUIContent("(Null)"), currType is null, assignNewType, "");
+
+            foreach (var type in types)
+            {
+                var typeName = type.Name;
+                menu.AddItem(new GUIContent(typeName), currType == type, assignNewType, type.AssemblyQualifiedName);
+            }
+
+            void assignNewType(object obj)
+            {
+                var newTypename = (string)obj;
+                typenameProperty.serializedObject.Update();
+                typenameProperty.stringValue = newTypename;
+                typenameProperty.serializedObject.ApplyModifiedProperties();
+            }
+
+            menu.ShowAsContext();
         }
     }
 }

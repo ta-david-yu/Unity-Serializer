@@ -45,8 +45,9 @@ namespace DYSerializer
             var className = string.IsNullOrEmpty(names.ClassName) ? "(Null)" :
                 DYSerializerSettings.GetOrCreateSettings(DYSerializerSettingsProvider.c_SettingsPath, DYSerializerSettingsProvider.c_SettingsFilename).ShowTypeNameWithNameSpace? names.ClassName : property.GetManagedReferenceFullType().Name;
             var assemblyName = names.AssemblyName;
+            var tipmsg = string.IsNullOrEmpty(names.ClassName)? "" : names.ClassName + " (" + assemblyName + ")";
 
-            if (GUI.Button(buttonPosition, new GUIContent(className, names.ClassName + " (" + assemblyName + ")")))
+            if (GUI.Button(buttonPosition, new GUIContent(className, tipmsg)))
                 drawTypeDropDownList(position, property, types.ToList());
 
             GUI.backgroundColor = storedColor;
