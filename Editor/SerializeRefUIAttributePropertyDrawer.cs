@@ -66,7 +66,16 @@ namespace DYSerializer
 
             menu.AddItem(new GUIContent("(Null)"), property.GetManagedReferenceFullType() is null, assignNewInstanceCmd, new AssignNewInstanceData(null, property));
 
-            foreach (var type in types)
+            var attr = attribute as SerializeRefUIAttribute;
+
+            var filteredTypes = types;
+
+            if (attr.FilterTypes.Count > 0)
+            {
+                filteredTypes =  types.Where((type) => attr.FilterTypes.Contains(type)).ToList();
+            }
+
+            foreach (var type in filteredTypes)
             {
                 var entryName = type.Name;
                 menu.AddItem(new GUIContent(entryName), property.GetManagedReferenceFullType() == type, assignNewInstanceCmd, new AssignNewInstanceData(type, property));
